@@ -1,0 +1,11 @@
+{
+    "name": "eelf/proto",
+    "autoload": {
+        "psr-4": {
+            "Proto\\": "src"
+        }
+    },
+    "require": {
+        "eelf/net": "^1.0.0"
+    }
+}
