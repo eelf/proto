@@ -15,7 +15,6 @@ class IdeProto extends StreamProto {
             $args_plain[] = $value;
         }
         $packet = implode(' ', array_merge([$cmd], $args_plain));
-        var_dump($packet);
         return "$packet\0";
     }
 
