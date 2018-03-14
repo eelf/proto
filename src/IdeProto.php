@@ -9,20 +9,14 @@ class IdeProto extends StreamProto {
     const EVENT_IDE_PKT = 1;
 
     public static function ser($cmd, $args) {
-        $args_plain = [];
-        foreach ($args as $key => $value) {
-            $args_plain[] = "-$key";
-            $args_plain[] = $value;
-        }
-        $packet = implode(' ', array_merge([$cmd], $args_plain));
-        return "$packet\0";
+        return "$cmd $args\0";
     }
 
     public function data($data) {
         parent::data($data);
 
         while ($packet = $this->splitIdeBufIntoPacket()) {
-            $this->emit(self::EVENT_IDE_PKT, $type, $args);
+            $this->emit(self::EVENT_IDE_PKT, $packet[0], $packet[1]);
         }
     }
 
@@ -37,9 +31,10 @@ class IdeProto extends StreamProto {
 
     public static function parseIdeArgs($args) {
         //todo https://xdebug.org/docs-dbgp.php
+        $args = explode(' ', $args);
         $result = [];
-        for ($i = 1; $i < count($args); $i++) {
-            if (in_array($args[$i], ['-p', '-k', '-m', '-i', '-n', '-v'])) {
+        for ($i = 0; $i < count($args) - 1; $i++) {
+            if (in_array($args[$i], ['-p', '-k', '-m', '-i', '-n', '-v', '-f', '-t'])) {
                 $key = $args[$i][1];
                 $i++;
                 $result[$key] = $args[$i];
@@ -48,5 +43,14 @@ class IdeProto extends StreamProto {
             }
         }
         return [$result, null];
+    }
+
+    public static function buildArgs($args) {
+        $args_plain = [];
+        foreach ($args as $key => $value) {
+            $args_plain[] = "-$key";
+            $args_plain[] = $value;
+        }
+        return implode(' ', $args_plain);
     }
 }

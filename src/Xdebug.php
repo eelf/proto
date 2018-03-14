@@ -44,7 +44,8 @@ class Xdebug extends StreamProto {
                 return null;
             }
             $this->length = null;
+            return new \SimpleXMLElement($packet);
         }
-        return new \SimpleXMLElement($packet);
+        return null;
     }
 }
